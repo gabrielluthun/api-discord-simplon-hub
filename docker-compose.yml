@@ -3,7 +3,8 @@ version: '3.8'
 services:
   api:
     build: 
-      context: ./api-discord-simplon-hub
+      context: ./api-bot-hub
+      dockerfile: ../Dockerfile
     container_name: nest-api
     ports:
       - "3000:3000"
@@ -15,8 +16,10 @@ services:
       - postgres
       - redis
     volumes:
-      - ./api-discord-simplon-hub:/app
+      - ./api-bot-hub:/app
       - /app/node_modules
+      - /app/dist
+    working_dir: /app
 
   postgres:
     image: postgres:latest
