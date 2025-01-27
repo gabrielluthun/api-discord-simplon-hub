@@ -21,6 +21,7 @@ lerna-debug.log*
 /coverage
 /.nyc_output
 
+
 # IDEs and editors
 /.idea
 .project
@@ -52,3 +53,6 @@ docker-compose.override.yml
 
 # System Files
 Thumbs.db
+
+# Cursor
+.cursorrules
