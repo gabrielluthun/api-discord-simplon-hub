@@ -36,6 +36,6 @@ jobs:
         username: ${{ secrets.VPS_USERNAME }}
         key: ${{ secrets.VPS_PRIVATE_KEY }}
         script: |
-          cd home/adminlocal/api-simplon
+          cd /home/adminlocal/api-simplon
           docker-compose -f docker-compose.yml down
           docker-compose -f docker-compose.prod.yml up -d --build
