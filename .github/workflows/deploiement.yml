@@ -59,12 +59,12 @@ jobs:
           
           # Construction et démarrage des nouveaux conteneurs
           echo "Démarrage des nouveaux conteneurs..."
-          if sudo docker-compose -f docker-compose.prod.yml up -d --build; then
+          if sudo docker-compose -f docker-compose.yml up -d --build; then
             echo "Déploiement réussi!"
             
             # Vérification que les conteneurs sont bien démarrés
             sleep 5
-            if ! sudo docker-compose -f docker-compose.prod.yml ps | grep -q "Up"; then
+            if ! sudo docker-compose -f docker-compose.yml ps | grep -q "Up"; then
               echo "ERREUR: Les conteneurs ne semblent pas être en cours d'exécution!"
               exit 1
             fi
