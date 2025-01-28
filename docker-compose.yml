@@ -6,12 +6,11 @@ services:
       context: ./api
       dockerfile: ../Dockerfile
     container_name: api-simplon-community
-    ports:
-      - "3000:3000"
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
       - REDIS_URL=redis://redis:6379
+      - PORT=9017
     depends_on:
       - postgres
       - redis
@@ -45,7 +44,7 @@ services:
     image: nginx:latest
     container_name: nginx-proxy
     ports:
-      - "80:80"
+      - "9017:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
