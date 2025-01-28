@@ -24,6 +24,6 @@ RUN npm ci --only=production && \
 
 USER node
 
-EXPOSE 9037
+EXPOSE 3000
 
 CMD ["npm", "run", "start:prod"]
