@@ -36,6 +36,39 @@ jobs:
         username: ${{ secrets.VPS_USERNAME }}
         key: ${{ secrets.VPS_PRIVATE_KEY }}
         script: |
-          cd /home/adminlocal/api-simplon
-          docker-compose -f docker-compose.yml down
-          docker-compose -f docker-compose.prod.yml up -d --build
+          cd /home/adminlocal/api-simplon || exit 1
+          
+          # Vérification des permissions Docker
+          if ! groups | grep -q docker; then
+            echo "L'utilisateur n'est pas dans le groupe docker, tentative d'ajout..."
+            sudo usermod -aG docker $USER
+            # Comme usermod nécessite une reconnexion, on utilise directement sudo
+          fi
+          
+          # Vérification que Docker est en cours d'exécution
+          if ! sudo systemctl is-active --quiet docker; then
+            echo "Docker n'est pas en cours d'exécution, démarrage..."
+            sudo systemctl start docker
+            # Attente que Docker soit prêt
+            timeout 30 bash -c 'until sudo docker info >/dev/null 2>&1; do echo "En attente de Docker..."; sleep 1; done'
+          fi
+          
+          # Nettoyage des anciens conteneurs
+          echo "Arrêt des conteneurs existants..."
+          sudo docker-compose -f docker-compose.yml down || echo "Erreur lors de l'arrêt des conteneurs, on continue..."
+          
+          # Construction et démarrage des nouveaux conteneurs
+          echo "Démarrage des nouveaux conteneurs..."
+          if sudo docker-compose -f docker-compose.prod.yml up -d --build; then
+            echo "Déploiement réussi!"
+            
+            # Vérification que les conteneurs sont bien démarrés
+            sleep 5
+            if ! sudo docker-compose -f docker-compose.prod.yml ps | grep -q "Up"; then
+              echo "ERREUR: Les conteneurs ne semblent pas être en cours d'exécution!"
+              exit 1
+            fi
+          else
+            echo "ERREUR lors du déploiement!"
+            exit 1
+          fi
