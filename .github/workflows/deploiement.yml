@@ -38,6 +38,9 @@ jobs:
         script: |
           cd /home/adminlocal/api-simplon || exit 1
           
+          # Création du lien symbolique pour le Dockerfile
+          ln -sf Dockerfile.dev Dockerfile
+          
           # Vérification des permissions Docker
           if ! groups | grep -q docker; then
             echo "L'utilisateur n'est pas dans le groupe docker, tentative d'ajout..."
